@@ -201,6 +201,6 @@ setInterval(async () => {
 
         processing = false;
 
-    }, 8000);
+    }, 10000);
 
 }, 1000);
