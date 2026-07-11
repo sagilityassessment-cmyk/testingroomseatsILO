@@ -112,12 +112,12 @@ let announceText = "";
 if (isNaN(item.id)) {
 
     announceText =
-        `Seat number ${item.seat}. Applicant ${item.id}. Please proceed to Testing Room.`;
+        `sSeat number ${item.seat}. Applicant ${item.id}. Please proceed to Testing Room.`;
 
 } else {
 
     announceText =
-        `Seat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`;
+        `sSeat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`;
 
 }
 
