@@ -1,4 +1,7 @@
-html
+html,
+body{
+    margin:0;
+    padding:0;
     font-family:Arial,sans-serif;
 }
 
@@ -19,16 +22,16 @@ html
 
 header{
     background:#21105e;
-    height:110px;
+    height:95px;
     display:flex;
     justify-content:center;
     align-items:center;
 }
 
 .title{
-    font-size:90px;
+    font-size:72px;
     font-weight:900;
-    color:#fff;
+    color:#ffffff;
     letter-spacing:2px;
 }
 
@@ -67,8 +70,8 @@ header{
 }
 
 .called{
-    background:#2daa43!important;
-    color:#fff!important;
+    background:#2daa43 !important;
+    color:#ffffff !important;
 }
 
 .board{
@@ -87,26 +90,26 @@ header{
     color:#21105e;
     font-size:16px;
     font-weight:900;
-    height:38px;
+    height:34px;
     border:1px solid #21105e;
 }
 
 .board td{
-    color:#21105e;
     border:1px solid #21105e;
     text-align:center;
     vertical-align:middle;
-    font-size:62px;
+    color:#21105e;
+    font-size:58px;
     font-weight:900;
     padding:0;
 }
 
 .pink{
-    background:#d8c1c1;
+    background:#d9c2c2;
 }
 
 .green{
-    background:#c8d2d2;
+    background:#c7d2d2;
 }
 
 .popup{
@@ -117,8 +120,8 @@ header{
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    color:#21105e;
     text-align:center;
+    color:#21105e;
     z-index:9999;
 }
 
