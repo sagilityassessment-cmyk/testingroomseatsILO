@@ -31,10 +31,12 @@ function draw(seats = []) {
 
             let seat = r + (c * 5);
 
-html += `
-<td style="width:18%;">SEAT ${seat}</td>
-<td style="width:7%;">${seats[seat] || 0}</td>
-`;
+            let color = c % 2 === 0 ? "pink" : "green";
+
+            html += `
+            <td class="${color}">SEAT ${seat}</td>
+            <td class="${color}">${seats[seat] || 0}</td>
+            `;
         }
 
         html += "</tr>";
@@ -99,7 +101,7 @@ setInterval(async () => {
     `;
 
     const u = new SpeechSynthesisUtterance(
-        `SSeat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`
+        `Seat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`
     );
 
     u.voice = femaleVoice();
