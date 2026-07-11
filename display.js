@@ -1,3 +1,5 @@
+const SITE = "BOHOL";
+
 import { db } from "./firebase.js";
 import {
     ref,
@@ -54,25 +56,30 @@ function draw(seats = []) {
     board.innerHTML = html;
 }
 
-/* LIVE SEAT SYNC */
-onValue(ref(db, "seats"), snapshot => {
+/* BOHOL SEATS */
+onValue(
+    ref(db, `locations/${SITE}/seats`),
+    snapshot => {
 
-    const seats = snapshot.val() || [];
+        const seats = snapshot.val() || [];
 
-    draw(seats);
+        draw(seats);
 
-});
+    }
+);
 
-/* LIVE QUEUE SYNC */
-onValue(ref(db, "queue"), snapshot => {
+/* BOHOL QUEUE */
+onValue(
+    ref(db, `locations/${SITE}/queue`),
+    snapshot => {
 
-    const data = snapshot.val() || {};
+        const data = snapshot.val() || {};
 
-    queue = Object.entries(data);
+        queue = Object.entries(data);
 
-});
+    }
+);
 
-/* FEMALE VOICE */
 function femaleVoice(){
 
     const voices = speechSynthesis.getVoices();
@@ -84,7 +91,6 @@ function femaleVoice(){
     );
 }
 
-/* QUEUE PROCESSOR */
 setInterval(async () => {
 
     if(processing) return;
@@ -107,21 +113,23 @@ setInterval(async () => {
         </div>
     `;
 
-let announceText = "";
+    let announceText = "";
 
-if (isNaN(item.id)) {
+    if(isNaN(item.id)){
 
-    announceText =
-        `sSeat number ${item.seat}. Applicant ${item.id}. Please proceed to Testing Room.`;
+        announceText =
+            `Seat number ${item.seat}. Applicant ${item.id}. Please proceed to Testing Room.`;
 
-} else {
+    }else{
 
-    announceText =
-        `Seat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`;
+        announceText =
+            `Seat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`;
 
-}
+    }
 
-const u = new SpeechSynthesisUtterance(announceText);
+    const u = new SpeechSynthesisUtterance(
+        announceText
+    );
 
     u.voice = femaleVoice();
     u.rate = 0.8;
@@ -141,7 +149,7 @@ const u = new SpeechSynthesisUtterance(announceText);
         try{
 
             await remove(
-                ref(db, `queue/${key}`)
+                ref(db, `locations/${SITE}/queue/${key}`)
             );
 
         }catch(err){
