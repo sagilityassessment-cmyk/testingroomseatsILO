@@ -1,6 +1,4 @@
-html,body{
-    margin:0;
-    padding:0;
+html
     font-family:Arial,sans-serif;
 }
 
@@ -21,16 +19,17 @@ html,body{
 
 header{
     background:#21105e;
-    height:140px;
+    height:110px;
     display:flex;
     justify-content:center;
     align-items:center;
 }
 
 .title{
-    font-size:100px;
+    font-size:90px;
     font-weight:900;
     color:#fff;
+    letter-spacing:2px;
 }
 
 .grid{
@@ -84,28 +83,30 @@ header{
 }
 
 .board th{
-    background:#8dc8c6;
+    background:#8dbfc0;
     color:#21105e;
-    font-size:28px;
+    font-size:16px;
     font-weight:900;
-    height:55px;
+    height:38px;
+    border:1px solid #21105e;
 }
 
 .board td{
     color:#21105e;
-    border:2px solid #21105e;
+    border:1px solid #21105e;
     text-align:center;
     vertical-align:middle;
-    font-size:75px;
+    font-size:62px;
     font-weight:900;
+    padding:0;
 }
 
 .pink{
-    background:#e8cccc;
+    background:#d8c1c1;
 }
 
 .green{
-    background:#d7e4e1;
+    background:#c8d2d2;
 }
 
 .popup{
@@ -118,6 +119,7 @@ header{
     align-items:center;
     color:#21105e;
     text-align:center;
+    z-index:9999;
 }
 
 .hidden{
@@ -131,7 +133,7 @@ header{
 }
 
 .instruction{
-    font-size:100px;
+    font-size:90px;
     font-weight:900;
-    margin-top:25px;
+    margin-top:20px;
 }
