@@ -1,1 +1,53 @@
-function draw(){let h='<table><tr>';for(let i=0;i<4;i++)h+='<th>SEAT</th><th>ID NO.</th>';h+='</tr>';for(let r=1;r<=5;r++){h+='<tr>';for(let c=0;c<4;c++){let s=r+c*5,cl=c%2===0?'pink':'green';h+=`<td class=${cl}>SEAT ${s}</td><td class=${cl}>${localStorage.getItem('seat_'+s)||0}</td>`;}h+='</tr>';}h+='</table>';board.innerHTML=h;}draw();let p=false;setInterval(()=>{draw();if(p)return;let q=JSON.parse(localStorage.getItem('callQueue')||'[]');if(!q.length)return;p=true;let i=q.shift();localStorage.setItem('callQueue',JSON.stringify(q));popup.classList.remove('hidden');popup.innerHTML=`<div class='seat-call'>SEAT ${i.seat} - ID ${i.id}</div><div class='instruction'>PLEASE PROCEED TO TESTING ROOM</div>`;let u=new SpeechSynthesisUtterance(`ID ${i.id}. Seat ${i.seat}. Please proceed to Testing Room.`);let v=speechSynthesis.getVoices().find(x=>/zira|aria|samantha|jenny/i.test(x.name));if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(()=>{popup.classList.add('hidden');p=false;},8000);},1000);
+import { db } from "./firebase.js";
+import {
+  ref,
+  onValue,
+  remove
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+const board = document.getElementById("board");
+const popup = document.getElementById("popup");
+
+let processing = false;
+let queue = [];
+let announced = new Set();
+
+function draw(seats = {}) {
+
+    let h = "<table><tr>";
+
+    for (let i = 0; i < 4; i++) {
+        h += "<th>SEAT</th><th>ID NO.</th>";
+    }
+
+    h += "</tr>";
+
+    for (let r = 1; r <= 5; r++) {
+
+        h += "<tr>";
+
+        for (let c = 0; c < 4; c++) {
+
+            let s = r + c * 5;
+            let cl = c % 2 === 0 ? "pink" : "green";
+
+            h += `
+                <td class="${cl}">
+                    SEAT ${s}
+                </td>
+
+                <td class="${cl}">
+                    ${seats[s] || 0}
+                </td>
+            `;
+        }
+
+        h += "</tr>";
+    }
+
+    h += "</table>";
+
+    board.innerHTML = h;
+}
+
+// Live seat updates
