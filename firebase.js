@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyCal6UJkUbd4fGkqkN5iIYwmKpSBir7CPY",
   authDomain: "testing-room-iloilo.firebaseapp.com",
   databaseURL: "https://testing-room-iloilo-default-rtdb.asia-southeast1.firebasedatabase.app",
