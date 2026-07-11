@@ -1,1 +1,53 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>Seat ID Manager</title><link rel="stylesheet" href="style.css"></head><body class="admin-page"><header><div class="title">SEAT ID MANAGER</div></header><div id="grid" class="grid"></div><div style="text-align:center;padding:20px;"><a href="display.html" target="_blank"><button style="padding:15px 40px;font-size:28px;font-weight:900;background:#21105e;color:#fff;border:none;border-radius:10px;cursor:pointer;">VIEW DISPLAY</button></a></div><script type="module" src="admin.js"></script></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Seat ID Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-page">
+
+    <header>
+        <div class="title">SEAT ID MANAGER</div>
+    </header>
+
+    <div id="grid" class="grid"></div>
+
+    <div style="text-align:center;padding:20px;">
+
+        <button
+            onclick="clearAllSeats()"
+            style="
+                padding:15px 40px;
+                font-size:28px;
+                font-weight:900;
+                background:#d62828;
+                color:#fff;
+                border:none;
+                border-radius:10px;
+                cursor:pointer;
+                margin-right:20px;">
+            CLEAR DATA
+        </button>
+
+        <a href="display.html" target="_blank">
+            <button
+                style="
+                    padding:15px 40px;
+                    font-size:28px;
+                    font-weight:900;
+                    background:#21105e;
+                    color:#fff;
+                    border:none;
+                    border-radius:10px;
+                    cursor:pointer;">
+                VIEW DISPLAY
+            </button>
+        </a>
+
+    </div>
+
+    <script type="module" src="admin.js"></script>
+
+</body>
+</html>
