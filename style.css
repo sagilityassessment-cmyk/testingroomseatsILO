@@ -88,9 +88,9 @@ header{
 .board th{
     background:#8dbfc0;
     color:#21105e;
-    font-size:16px;
+    font-size:32px;
     font-weight:900;
-    height:34px;
+    height:70px;
     border:1px solid #21105e;
 }
 
