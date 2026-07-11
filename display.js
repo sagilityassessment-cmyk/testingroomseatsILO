@@ -3,45 +3,39 @@ import { ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase
 
 const board = document.getElementById("board");
 
-function draw(seats = []) {
-
-    let h = "<table><tr>";
-
-    for(let i=0;i<4;i++){
-        h += "<th>SEAT</th><th>ID NO.</th>";
-    }
-
-    h += "</tr>";
-
-    for(let r=1;r<=5;r++){
-
-        h += "<tr>";
-
-        for(let c=0;c<4;c++){
-
-            let s = r + (c*5);
-            let cl = c % 2 === 0 ? "pink" : "green";
-
-            h += `
-            <td class="${cl}">SEAT ${s}</td>
-            <td class="${cl}">${seats[s] || 0}</td>
-            `;
-        }
-
-        h += "</tr>";
-    }
-
-    h += "</table>";
-
-    board.innerHTML = h;
-}
-
-onValue(ref(db,"seats"), snapshot => {
+onValue(ref(db, "seats"), (snapshot) => {
 
     const seats = snapshot.val() || [];
 
-    console.log("SEATS RECEIVED", seats);
+    let html = `
+    <table style="width:100%;height:100%;border-collapse:collapse;">
+    <tr>
+        <th>SEAT</th><th>ID NO.</th>
+        <th>SEAT</th><th>ID NO.</th>
+        <th>SEAT</th><th>ID NO.</th>
+        <th>SEAT</th><th>ID NO.</th>
+    </tr>
+    `;
 
-    draw(seats);
+    for(let r=1;r<=5;r++){
+
+        html += "<tr>";
+
+        for(let c=0;c<4;c++){
+
+            let seat = r + (c*5);
+
+            html += `
+            <td>SEAT ${seat}</td>
+            <td>${seats[seat] || 0}</td>
+            `;
+        }
+
+        html += "</tr>";
+    }
+
+    html += "</table>";
+
+    board.innerHTML = html;
 
 });
