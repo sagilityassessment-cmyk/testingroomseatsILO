@@ -1,37 +1,132 @@
-const [key,item] = queue[0];
+import { db } from "./firebase.js";
+import {
+    ref,
+    onValue,
+    remove
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-popup.classList.remove("hidden");
+const board = document.getElementById("board");
+const popup = document.getElementById("popup");
 
-popup.innerHTML = `
-    <div class="seat-call">
-        SEAT ${item.seat} - ID ${item.id}
-    </div>
+let queue = [];
+let processing = false;
 
-    <div class="instruction">
-        PLEASE PROCEED TO TESTING ROOM
-    </div>
-`;
+function draw(seats = []) {
 
-const u = new SpeechSynthesisUtterance(
-    `Seat number ${item.seat}. I.D number ${item.id}. Please proceed to Testing Room.`
-);
+    let html = `
+    <table style="width:100%;height:100%;border-collapse:collapse;">
+    <tr>
+        <th>SEAT</th><th>ID NO.</th>
+        <th>SEAT</th><th>ID NO.</th>
+        <th>SEAT</th><th>ID NO.</th>
+        <th>SEAT</th><th>ID NO.</th>
+    </tr>
+    `;
 
-u.voice = femaleVoice();
-u.rate = 0.7;
-u.pitch = 1.0;
-u.volume = 1;
+    for(let r = 1; r <= 5; r++){
 
-speechSynthesis.cancel();
-speechSynthesis.speak(u);
+        html += "<tr>";
 
-setTimeout(async ()=>{
+        for(let c = 0; c < 4; c++){
 
-    popup.classList.add("hidden");
+            let seat = r + (c * 5);
 
-    await remove(
-        ref(db, `queue/${key}`)
+            html += `
+            <td>SEAT ${seat}</td>
+            <td>${seats[seat] || 0}</td>
+            `;
+        }
+
+        html += "</tr>";
+    }
+
+    html += "</table>";
+
+    board.innerHTML = html;
+}
+
+// Live Seat Sync
+onValue(ref(db, "seats"), snapshot => {
+
+    const seats = snapshot.val() || [];
+
+    draw(seats);
+
+});
+
+// Live Queue Sync
+onValue(ref(db, "queue"), snapshot => {
+
+    const data = snapshot.val() || {};
+
+    queue = Object.entries(data);
+
+});
+
+// Female Voice
+function femaleVoice(){
+
+    const voices = speechSynthesis.getVoices();
+
+    return (
+        voices.find(v =>
+            /zira|aria|samantha|jenny/i.test(v.name)
+        ) || voices[0]
+    );
+}
+
+// Queue Processor
+setInterval(async () => {
+
+    if (processing) return;
+
+    if (queue.length === 0) return;
+
+    processing = true;
+
+    const [key, item] = queue[0];
+
+    popup.classList.remove("hidden");
+
+    popup.innerHTML = `
+        <div class="seat-call">
+            SEAT ${item.seat} - ID ${item.id}
+        </div>
+
+        <div class="instruction">
+            PLEASE PROCEED TO TESTING ROOM
+        </div>
+    `;
+
+    const u = new SpeechSynthesisUtterance(
+        `Seat number ${item.seat}. Identification number ${item.id}. Please proceed to Testing Room.`
     );
 
-    processing = false;
+    u.voice = femaleVoice();
+    u.rate = 0.8;
+    u.pitch = 1.0;
+    u.volume = 1;
 
-}, 8000);
+    speechSynthesis.cancel();
+
+    setTimeout(() => {
+        speechSynthesis.speak(u);
+    }, 300);
+
+    setTimeout(async () => {
+
+        popup.classList.add("hidden");
+
+        try{
+            await remove(
+                ref(db, `queue/${key}`)
+            );
+        }catch(err){
+            console.log(err);
+        }
+
+        processing = false;
+
+    }, 8000);
+
+}, 1000);
