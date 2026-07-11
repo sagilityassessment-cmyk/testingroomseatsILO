@@ -10,6 +10,9 @@ import {
 const board = document.getElementById("board");
 const popup = document.getElementById("popup");
 
+/* CHIME SOUND */
+const chime = new Audio("./chime.mp3");
+
 let queue = [];
 let processing = false;
 
@@ -80,14 +83,17 @@ onValue(
     }
 );
 
+/* PROFESSIONAL FEMALE VOICE */
 function femaleVoice(){
 
     const voices = speechSynthesis.getVoices();
 
     return (
-        voices.find(v =>
-            /zira|aria|samantha|jenny/i.test(v.name)
-        ) || voices[0]
+        voices.find(v => /jenny/i.test(v.name)) ||
+        voices.find(v => /aria/i.test(v.name)) ||
+        voices.find(v => /zira/i.test(v.name)) ||
+        voices.find(v => /samantha/i.test(v.name)) ||
+        voices[0]
     );
 }
 
@@ -132,15 +138,27 @@ setInterval(async () => {
     );
 
     u.voice = femaleVoice();
-    u.rate = 0.8;
+    u.rate = 0.9;
     u.pitch = 1.0;
     u.volume = 1;
 
     speechSynthesis.cancel();
 
-    setTimeout(() => {
+    try {
+
+        chime.currentTime = 0;
+
+        await chime.play();
+
+        setTimeout(() => {
+            speechSynthesis.speak(u);
+        }, 700);
+
+    } catch(err) {
+
         speechSynthesis.speak(u);
-    }, 300);
+
+    }
 
     setTimeout(async () => {
 
