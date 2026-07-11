@@ -97,14 +97,14 @@ setInterval(async ()=>{
         </div>
     `;
 
-    const u =
-        new SpeechSynthesisUtterance(
-            `ID ${item.id}. Seat ${item.seat}. Please proceed to Testing Room.`
-        );
+    const u = new SpeechSynthesisUtterance(
+        `ID number ${item.id}. Seat ${item.seat}. Please proceed to Testing Room.`
+    );
 
     u.voice = femaleVoice();
-    u.rate = 0.9;
-    u.pitch = 1.1;
+    u.rate = 0.8;
+    u.pitch = 1.0;
+    u.volume = 1;
 
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
@@ -114,11 +114,11 @@ setInterval(async ()=>{
         popup.classList.add("hidden");
 
         await remove(
-            ref(db,`queue/${key}`)
+            ref(db, `queue/${key}`)
         );
 
         processing = false;
 
-    },8000);
+    }, 8000);
 
-},1000);
+}, 1000);
