@@ -14,13 +14,13 @@ let processing = false;
 function draw(seats = []) {
 
     let html = `
-    <table style="width:100%;height:100%;border-collapse:collapse;">
-    <tr>
-        <th>SEAT</th><th>ID NO.</th>
-        <th>SEAT</th><th>ID NO.</th>
-        <th>SEAT</th><th>ID NO.</th>
-        <th>SEAT</th><th>ID NO.</th>
-    </tr>
+    <table>
+        <tr>
+            <th>SEAT</th><th>ID NO.</th>
+            <th>SEAT</th><th>ID NO.</th>
+            <th>SEAT</th><th>ID NO.</th>
+            <th>SEAT</th><th>ID NO.</th>
+        </tr>
     `;
 
     for(let r = 1; r <= 5; r++){
@@ -31,14 +31,19 @@ function draw(seats = []) {
 
             let seat = r + (c * 5);
 
-            let color = c % 2 === 0 ? "pink" : "green";
+            let color = (c % 2 === 0)
+                ? "pink"
+                : "green";
 
-let color = (c % 2 === 0) ? "pink" : "green";
+            html += `
+                <td class="${color}">
+                    SEAT ${seat}
+                </td>
 
-html += `
-<td class="${color} seat-cell">SEAT ${seat}</td>
-<td class="${color} id-cell">${seats[seat] || 0}</td>
-`;
+                <td class="${color}">
+                    ${seats[seat] || 0}
+                </td>
+            `;
         }
 
         html += "</tr>";
@@ -49,7 +54,7 @@ html += `
     board.innerHTML = html;
 }
 
-// Live Seat Sync
+/* LIVE SEAT SYNC */
 onValue(ref(db, "seats"), snapshot => {
 
     const seats = snapshot.val() || [];
@@ -58,7 +63,7 @@ onValue(ref(db, "seats"), snapshot => {
 
 });
 
-// Live Queue Sync
+/* LIVE QUEUE SYNC */
 onValue(ref(db, "queue"), snapshot => {
 
     const data = snapshot.val() || {};
@@ -67,7 +72,7 @@ onValue(ref(db, "queue"), snapshot => {
 
 });
 
-// Female Voice
+/* FEMALE VOICE */
 function femaleVoice(){
 
     const voices = speechSynthesis.getVoices();
@@ -79,16 +84,16 @@ function femaleVoice(){
     );
 }
 
-// Queue Processor
+/* QUEUE PROCESSOR */
 setInterval(async () => {
 
-    if (processing) return;
+    if(processing) return;
 
-    if (queue.length === 0) return;
+    if(queue.length === 0) return;
 
     processing = true;
 
-    const [key, item] = queue[0];
+    const [key,item] = queue[0];
 
     popup.classList.remove("hidden");
 
@@ -103,7 +108,7 @@ setInterval(async () => {
     `;
 
     const u = new SpeechSynthesisUtterance(
-        `Seat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`
+        `Seat number ${item.seat}. Applicant number ${item.id}. Please proceed to Testing Room.`
     );
 
     u.voice = femaleVoice();
@@ -122,11 +127,15 @@ setInterval(async () => {
         popup.classList.add("hidden");
 
         try{
+
             await remove(
                 ref(db, `queue/${key}`)
             );
+
         }catch(err){
+
             console.log(err);
+
         }
 
         processing = false;
