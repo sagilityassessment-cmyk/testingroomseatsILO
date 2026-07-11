@@ -31,10 +31,10 @@ function draw(seats = []) {
 
             let seat = r + (c * 5);
 
-            html += `
-            <td>SEAT ${seat}</td>
-            <td>${seats[seat] || 0}</td>
-            `;
+html += `
+<td style="width:18%;">SEAT ${seat}</td>
+<td style="width:7%;">${seats[seat] || 0}</td>
+`;
         }
 
         html += "</tr>";
