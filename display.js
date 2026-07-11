@@ -13,7 +13,7 @@ popup.innerHTML = `
 `;
 
 const u = new SpeechSynthesisUtterance(
-    `Seat number ${item.seat}. I D number ${item.id}. Please proceed to Testing Room.`
+    `Seat number ${item.seat}. I.D number ${item.id}. Please proceed to Testing Room.`
 );
 
 u.voice = femaleVoice();
