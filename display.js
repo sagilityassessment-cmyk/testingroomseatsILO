@@ -165,22 +165,14 @@ setInterval(async () => {
 
             chimePlayed = true;
 
-            await new Promise((resolve) => {
+            chime.pause();
+            chime.currentTime = 0;
 
-                chime.pause();
-                chime.currentTime = 0;
+            await chime.play();
 
-                chime.onended = () => {
-                    resolve();
-                };
-
-                chime.play().catch(() => {
-                    resolve();
-                });
-
-            });
-
-            speak();
+            setTimeout(() => {
+                speak();
+            }, 1000);
 
         } else {
 
