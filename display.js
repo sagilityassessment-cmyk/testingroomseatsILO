@@ -97,9 +97,9 @@ setInterval(async ()=>{
         </div>
     `;
 
- const u = new SpeechSynthesisUtterance(
-        `ID number ${item.id}. Seat ${item.seat}. Please proceed to Testing Room.`
-    );
+const u = new SpeechSynthesisUtterance(
+    `I. D. ${item.id}. Seat number ${item.seat}. Please proceed to Testing Room.`
+);
 
     u.voice = femaleVoice();
     u.rate = 0.8;
