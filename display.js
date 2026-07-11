@@ -99,7 +99,7 @@ setInterval(async () => {
     `;
 
     const u = new SpeechSynthesisUtterance(
-        `Seat number ${item.seat}. ID ${item.id}. Please proceed to Testing Room.`
+        `Seat number ${item.seat}. I Dee number ${item.id}. Please proceed to Testing Room.`
     );
 
     u.voice = femaleVoice();
