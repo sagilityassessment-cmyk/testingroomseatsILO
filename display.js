@@ -8,6 +8,8 @@ import {
 const board = document.getElementById("board");
 const popup = document.getElementById("popup");
 
+console.log("DISPLAY STARTED");
+
 let processing = false;
 let queue = [];
 let announced = new Set();
@@ -28,17 +30,12 @@ function draw(seats = {}) {
 
         for (let c = 0; c < 4; c++) {
 
-            let s = r + c * 5;
+            let s = r + (c * 5);
             let cl = c % 2 === 0 ? "pink" : "green";
 
             h += `
-                <td class="${cl}">
-                    SEAT ${s}
-                </td>
-
-                <td class="${cl}">
-                    ${seats[s] || 0}
-                </td>
+                <td class="${cl}">SEAT ${s}</td>
+                <td class="${cl}">${seats[s] || 0}</td>
             `;
         }
 
@@ -50,4 +47,51 @@ function draw(seats = {}) {
     board.innerHTML = h;
 }
 
-// Live seat updates
+draw({});
+
+// LIVE SEAT UPDATES
+onValue(
+    ref(db, "seats"),
+    (snapshot) => {
+
+        const seats = snapshot.val() || {};
+
+        console.log("SEATS:", seats);
+
+        draw(seats);
+    },
+    (error) => {
+
+        console.error("SEATS ERROR:", error);
+    }
+);
+
+// LIVE QUEUE
+onValue(
+    ref(db, "queue"),
+    (snapshot) => {
+
+        const data = snapshot.val() || {};
+
+        queue = Object.entries(data).map(
+            ([key, value]) => ({
+                key,
+                ...value
+            })
+        );
+
+        console.log("QUEUE:", queue);
+    },
+    (error) => {
+
+        console.error("QUEUE ERROR:", error);
+    }
+);
+
+function getFemaleVoice() {
+
+    const voices = speechSynthesis.getVoices();
+
+    return (
+        voices.find(v =>
+            /zira|aria|samantha|jenny/i.test(v.name)
