@@ -107,11 +107,7 @@ onValue(
 setInterval(async () => {
 
     if (processing) return;
-
-    if (queue.length === 0) {
-        chimePlayed = false;
-        return;
-    }
+    if (queue.length === 0) return;
 
     processing = true;
 
