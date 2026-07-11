@@ -12,12 +12,21 @@ const popup = document.getElementById("popup");
 
 const chime = new Audio("./chime.mp3");
 
+/* Unlock audio after first click */
+document.addEventListener("click", () => {
+    chime.play()
+        .then(() => {
+            chime.pause();
+            chime.currentTime = 0;
+        })
+        .catch(() => {});
+}, { once: true });
+
 let selectedVoice = null;
 let queue = [];
 let processing = false;
 let chimePlayed = false;
 
-/* FEMALE VOICE */
 function loadFemaleVoice() {
 
     const voices = speechSynthesis.getVoices();
@@ -53,11 +62,8 @@ function draw(seats = []) {
 
         for (let c = 0; c < 4; c++) {
 
-            let seat = r + (c * 5);
-
-            let color = (c % 2 === 0)
-                ? "pink"
-                : "green";
+            const seat = r + (c * 5);
+            const color = (c % 2 === 0) ? "pink" : "green";
 
             html += `
                 <td class="${color}">
@@ -78,7 +84,6 @@ function draw(seats = []) {
     board.innerHTML = html;
 }
 
-/* SEATS */
 onValue(
     ref(db, `locations/${SITE}/seats`),
     snapshot => {
@@ -89,7 +94,6 @@ onValue(
     }
 );
 
-/* QUEUE */
 onValue(
     ref(db, `locations/${SITE}/queue`),
     snapshot => {
@@ -107,6 +111,7 @@ onValue(
 setInterval(async () => {
 
     if (processing) return;
+
     if (queue.length === 0) return;
 
     processing = true;
@@ -139,21 +144,14 @@ setInterval(async () => {
 
     }
 
-    const speak = () => {
+    const speech = new SpeechSynthesisUtterance(
+        announceText
+    );
 
-        speechSynthesis.cancel();
-
-        const speech = new SpeechSynthesisUtterance(
-            announceText
-        );
-
-        speech.voice = selectedVoice;
-        speech.rate = 0.9;
-        speech.pitch = 1.0;
-        speech.volume = 1;
-
-        speechSynthesis.speak(speech);
-    };
+    speech.voice = selectedVoice;
+    speech.rate = 0.9;
+    speech.pitch = 1.0;
+    speech.volume = 1;
 
     try {
 
@@ -167,19 +165,18 @@ setInterval(async () => {
             await chime.play();
 
             setTimeout(() => {
-                speak();
+                speechSynthesis.speak(speech);
             }, 1000);
 
         } else {
 
-            speak();
+            speechSynthesis.speak(speech);
 
         }
 
     } catch (err) {
 
-        console.log("Chime failed:", err);
-        speak();
+        speechSynthesis.speak(speech);
 
     }
 
