@@ -88,28 +88,28 @@ header{
 .board th{
     background:#8dbfc0;
     color:#21105e;
-    font-size:32px;
+    font-size:40px;
     font-weight:900;
-    height:70px;
+    height:80px;
     border:1px solid #21105e;
 }
 
 .board td{
+    color:#21105e;
     border:1px solid #21105e;
     text-align:center;
     vertical-align:middle;
-    color:#21105e;
-    font-size:58px;
+    font-size:70px;
     font-weight:900;
     padding:0;
 }
 
 .pink{
-    background:#d9c2c2;
+    background:#d6e3e3;
 }
 
 .green{
-    background:#c7d2d2;
+    background:#edf4f4;
 }
 
 .popup{
