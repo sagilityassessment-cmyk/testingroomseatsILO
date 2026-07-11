@@ -33,10 +33,12 @@ function draw(seats = []) {
 
             let color = c % 2 === 0 ? "pink" : "green";
 
-            html += `
-            <td class="${color}">SEAT ${seat}</td>
-            <td class="${color}">${seats[seat] || 0}</td>
-            `;
+let color = (c % 2 === 0) ? "pink" : "green";
+
+html += `
+<td class="${color} seat-cell">SEAT ${seat}</td>
+<td class="${color} id-cell">${seats[seat] || 0}</td>
+`;
         }
 
         html += "</tr>";
