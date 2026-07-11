@@ -10,12 +10,14 @@ import {
 const board = document.getElementById("board");
 const popup = document.getElementById("popup");
 
-/* CHIME SOUND */
 const chime = new Audio("./chime.mp3");
 
-/* FEMALE VOICE */
 let selectedVoice = null;
+let queue = [];
+let processing = false;
+let chimePlayed = false;
 
+/* FEMALE VOICE */
 function loadFemaleVoice() {
 
     const voices = speechSynthesis.getVoices();
@@ -32,9 +34,6 @@ function loadFemaleVoice() {
 
 loadFemaleVoice();
 speechSynthesis.onvoiceschanged = loadFemaleVoice;
-
-let queue = [];
-let processing = false;
 
 function draw(seats = []) {
 
@@ -79,26 +78,28 @@ function draw(seats = []) {
     board.innerHTML = html;
 }
 
-/* ILOILO SEATS */
+/* SEATS */
 onValue(
     ref(db, `locations/${SITE}/seats`),
     snapshot => {
 
         const seats = snapshot.val() || [];
-
         draw(seats);
 
     }
 );
 
-/* ILOILO QUEUE */
+/* QUEUE */
 onValue(
     ref(db, `locations/${SITE}/queue`),
     snapshot => {
 
         const data = snapshot.val() || {};
-
         queue = Object.entries(data);
+
+        if (queue.length === 0) {
+            chimePlayed = false;
+        }
 
     }
 );
@@ -138,7 +139,7 @@ setInterval(async () => {
 
     }
 
-    const speakAnnouncement = () => {
+    const speak = () => {
 
         speechSynthesis.cancel();
 
@@ -156,18 +157,29 @@ setInterval(async () => {
 
     try {
 
-        chime.pause();
-        chime.currentTime = 0;
+        if (!chimePlayed) {
 
-        chime.onended = () => {
-            speakAnnouncement();
-        };
+            chimePlayed = true;
 
-        await chime.play();
+            chime.pause();
+            chime.currentTime = 0;
+
+            await chime.play();
+
+            setTimeout(() => {
+                speak();
+            }, 1000);
+
+        } else {
+
+            speak();
+
+        }
 
     } catch (err) {
 
-        speakAnnouncement();
+        console.log("Chime failed:", err);
+        speak();
 
     }
 
