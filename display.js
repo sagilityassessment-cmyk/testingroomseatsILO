@@ -107,9 +107,21 @@ setInterval(async () => {
         </div>
     `;
 
-    const u = new SpeechSynthesisUtterance(
-        `SSeat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`
-    );
+let announceText = "";
+
+if (isNaN(item.id)) {
+
+    announceText =
+        `Seat number ${item.seat}. Applicant ${item.id}. Please proceed to Testing Room.`;
+
+} else {
+
+    announceText =
+        `Seat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`;
+
+}
+
+const u = new SpeechSynthesisUtterance(announceText);
 
     u.voice = femaleVoice();
     u.rate = 0.8;
