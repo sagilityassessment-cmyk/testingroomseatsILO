@@ -117,7 +117,7 @@ if (isNaN(item.id)) {
 } else {
 
     announceText =
-        `sSeat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`;
+        `Seat number ${item.seat}. ID number ${item.id}. Please proceed to Testing Room.`;
 
 }
 
