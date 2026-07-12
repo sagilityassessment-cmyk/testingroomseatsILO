@@ -23,7 +23,7 @@ body{
 
 header{
     background:#21105e;
-    height:80px;
+    height:100px;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -33,7 +33,7 @@ header{
 }
 
 .title{
-    font-size:60px;
+    font-size:80px;
     font-weight:900;
     color:#ffffff;
     letter-spacing:2px;
