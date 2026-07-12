@@ -46,6 +46,18 @@ header{
     font-size:70px;
 }
 
+
+/* ADMIN PAGE HEADER */
+.admin-page header{
+    height:100px;
+}
+
+/* DISPLAY PAGE HEADER */
+.display-page header{
+    height:140px;
+}
+
+
 /* DISPLAY PAGE TITLE TESTING ROOM */
 .display-page .title{
     font-size:140px;
