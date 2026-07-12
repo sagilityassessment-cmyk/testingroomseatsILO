@@ -32,13 +32,14 @@ header{
     z-index:1000;
 }
 
-
 .title{
-    font-size:120px;
+    font-size:60px;
     font-weight:900;
     color:#ffffff;
     letter-spacing:2px;
+    line-height:1;
 }
+
 
 .grid{
     display:grid;
