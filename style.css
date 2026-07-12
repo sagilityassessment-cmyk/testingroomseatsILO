@@ -20,7 +20,7 @@ body{
     color:#21105e;
 }
 
-
+/* HEADER */
 header{
     background:#21105e;
     height:100px;
@@ -32,15 +32,26 @@ header{
     z-index:1000;
 }
 
+/* COMMON TITLE STYLE */
 .title{
-    font-size:80px;
     font-weight:900;
     color:#ffffff;
     letter-spacing:2px;
     line-height:1;
+    text-align:center;
 }
 
+/* ADMIN PAGE TITLE */
+.admin-page .title{
+    font-size:70px;
+}
 
+/* DISPLAY PAGE TITLE */
+.display-page .title{
+    font-size:100px;
+}
+
+/* GRID */
 .grid{
     display:grid;
     grid-template-columns:repeat(5,1fr);
@@ -80,6 +91,7 @@ header{
     color:#ffffff !important;
 }
 
+/* DISPLAY BOARD */
 .board{
     flex:1;
 }
@@ -118,6 +130,7 @@ header{
     background:#f2fff7;
 }
 
+/* POPUP */
 .popup{
     position:fixed;
     inset:0;
