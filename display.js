@@ -166,7 +166,7 @@ setInterval(async () => {
 
             setTimeout(() => {
                 speechSynthesis.speak(speech);
-            }, 1000);
+            }, 2000);
 
         } else {
 
