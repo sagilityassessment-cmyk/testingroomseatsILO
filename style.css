@@ -22,7 +22,7 @@ body{
 /* testing room  header */
 header{
     background:#21105e;
-    height:46px;
+    height:50px;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -307,7 +307,7 @@ header{
     margin-top:20px;
 }
 .applicant-call-id{
-    font-size:150px;
+    font-size:180px;
     font-weight:900;
     line-height:1;
     text-align:center;

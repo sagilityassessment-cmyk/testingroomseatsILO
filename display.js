@@ -1,4 +1,4 @@
-const SITE = "ILO";
+const SITE = "test";
 
 import { db } from "./firebase.js";
 import {
@@ -122,7 +122,7 @@ function drawInterviewRooms() {
                 ? "name-value"
                 : "id-value"
         }">
-            ${interviewRooms[1] || ""}
+            ${interviewRooms[1] || "0"}
         </span>
     </td>
 
@@ -133,7 +133,7 @@ function drawInterviewRooms() {
                 ? "name-value"
                 : "id-value"
         }">
-            ${interviewRooms[2] || ""}
+            ${interviewRooms[2] || "0"}
         </span>
     </td>
 
@@ -144,7 +144,7 @@ function drawInterviewRooms() {
                 ? "name-value"
                 : "id-value"
         }">
-            ${interviewRooms[3] || ""}
+            ${interviewRooms[3] || "0"}
         </span>
     </td>
 
@@ -155,7 +155,7 @@ function drawInterviewRooms() {
                 ? "name-value"
                 : "id-value"
         }">
-            ${interviewRooms[4] || ""}
+            ${interviewRooms[4] || "0"}
         </span>
     </td>
 
@@ -166,7 +166,7 @@ function drawInterviewRooms() {
                 ? "name-value"
                 : "id-value"
         }">
-            ${interviewRooms[5] || ""}
+            ${interviewRooms[5] || "0"}
         </span>
     </td>
 
@@ -284,19 +284,19 @@ if (isInterview) {
 
 popup.innerHTML = `
     <div class="seat-call">
-        SEAT ${item.seat}
+        ROOM ${item.room}
     </div>
 
-    <div class="${
-        isNaN(item.id)
-            ? 'applicant-call-name'
-            : 'applicant-call-id'
-    }">
-        ${item.id}
-    </div>
+<div class="${
+    isNaN(item.value)
+        ? 'applicant-call-name'
+        : 'applicant-call-id'
+}">
+    ${item.value}
+</div>
 
     <div class="instruction">
-        PLEASE PROCEED TO TESTING ROOM
+        PLEASE PROCEED TO INTERVIEW ROOM
     </div>
 `;
 

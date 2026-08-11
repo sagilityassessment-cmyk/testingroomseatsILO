@@ -66,7 +66,7 @@ async function loadSeats() {
 
         for (let i = 1; i <= 5; i++) {
 
-            const roomValue = rooms[i] || "";
+            const roomValue = rooms[i] || 0;
 
             interviewGrid.innerHTML += `
             <div class="card">
@@ -109,7 +109,7 @@ window.saveInterview = async function(room, value){
             db,
             `locations/${SITE}/interviewRooms/${room}`
         ),
-        value || ""
+        value || 0
     );
 
 };
@@ -128,7 +128,7 @@ window.callSeat = async function(seat){
     if (seatSnapshot.exists()) {
         id = seatSnapshot.val();
     }
-
+if (id === 0 || id === "") return;
     await push(
         ref(
             db,
@@ -163,7 +163,7 @@ window.callInterview = async function(room){
         .value
         .trim();
 
-    if (!value) return;
+    if (!value || value === 0) return;
 
     await push(
         ref(
@@ -218,7 +218,7 @@ window.clearAllSeats = async function(){
                 db,
                 `locations/${SITE}/interviewRooms/${i}`
             ),
-            ""
+            0
         );
     }
 
