@@ -5,34 +5,37 @@ body{
     font-family:Arial,sans-serif;
 }
 
+/* ADMIN PAGE */
+
 .admin-page{
     background:#ececec;
     min-height:100vh;
     overflow-y:auto;
 }
 
+/* DISPLAY PAGE */
+
 .display-page{
     background:#ececec;
-    height:100vh;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
     color:#21105e;
 }
-
-/* HEADER */
+/* testing room  header */
 header{
     background:#21105e;
-    height:100px;
+    height:46px;
     display:flex;
     justify-content:center;
     align-items:center;
-    position:sticky;
-    top:0;
-    z-index:1000;
 }
-
-/* COMMON TITLE STYLE */
+/* testing room HEADER */
+.display-page .title{
+    font-size:50px !important;
+    font-weight:900;
+    color:#ffffff;
+    letter-spacing:2px;
+    line-height:1;
+    text-align:center;
+}
 .title{
     font-weight:900;
     color:#ffffff;
@@ -40,62 +43,68 @@ header{
     line-height:1;
     text-align:center;
 }
-
-/* ADMIN PAGE TITLE ID MANAGER */
+/* ASSESSMENT SEAT ID MANAGER */
 .admin-page .title{
-    font-size:70px;
+    font-size:50px;
 }
 
-
-/* ADMIN PAGE HEADER id manager blue*/
-.admin-page header{
-    height:100px;
-}
-
-/* DISPLAY PAGE HEADER testing room blue*/
-.display-page header{
-    height:140px;
-}
-
-
-/* DISPLAY PAGE TITLE TESTING ROOM */
-.display-page .title{
-    font-size:140px;
-}
 
 /* GRID */
+
 .grid{
     display:grid;
     grid-template-columns:repeat(5,1fr);
-    gap:24px;
-    padding:24px;
+    gap:15px;
+    padding:15px;
 }
 
 .card{
     background:#f1f1f1;
     border:3px solid #21105e;
     border-radius:12px;
-    padding:16px;
+    padding:12px;
 }
-
+/* SEAT */
 .card h3{
-    font-size:30px;
+    font-size:20px;
     color:#21105e;
+    text-transform:uppercase;
+    text-align:center;
+    margin:0 0 10px 0;
+    font-weight:900;
 }
 
-.card input{
+.card textarea{
     width:100%;
     box-sizing:border-box;
-    font-size:32px;
-    padding:12px;
+
+    text-align:center;
+
+    font-size:22px;
+    font-family:Arial,sans-serif;
+    font-weight:700;
+
+    height:80px;
+
+    padding:15px 10px;
+
+    resize:none;
+    overflow:hidden;
+
+    white-space:normal;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+
+    line-height:1.2;
 }
 
 .card button{
     width:100%;
-    padding:12px;
-    margin-top:10px;
-    font-size:28px;
+    padding:8px;
+    margin-top:8px;
+    font-size:15px;
     font-weight:900;
+    height:40px;
 }
 
 .called{
@@ -103,14 +112,14 @@ header{
     color:#ffffff !important;
 }
 
-/* DISPLAY BOARD */
+/* TESTING ROOM TABLE */
+
 .board{
-    flex:1;
+    width:100%;
 }
 
 .board table{
     width:100%;
-    height:100%;
     border-collapse:collapse;
     table-layout:fixed;
 }
@@ -118,20 +127,22 @@ header{
 .board th{
     background:#8dbfc0;
     color:#21105e;
-    font-size:40px;
+    font-size:35px;
     font-weight:900;
-    height:80px;
+    height:60px;
     border:1px solid #21105e;
 }
-
+/* TABLE testing seat size word*/
 .board td{
     color:#21105e;
     border:1px solid #21105e;
     text-align:center;
     vertical-align:middle;
-    font-size:60px;
+    font-size:32px;
     font-weight:900;
+    height:91px;
     padding:0;
+    overflow:hidden;
 }
 
 .pink{
@@ -142,7 +153,120 @@ header{
     background:#f2fff7;
 }
 
+/* INTERVIEW HEADER */
+
+.section-title{
+    background:#21105e;
+
+    height:50px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:#ffffff;
+
+    font-size:45px;
+    font-weight:900;
+
+    line-height:1;
+    letter-spacing:2px;
+    text-align:center;
+}
+
+/* INTERVIEW TABLE */
+
+#interviewBoard{
+    width:100%;
+}
+
+#interviewBoard table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+}
+/* room1 room 2 etc */
+#interviewBoard th{
+    background:#8dbfc0;
+    color:#21105e;
+    font-size:30px;
+    font-weight:900;
+    height:30px;
+    border:1px solid #21105e;
+}
+/*TABLE interview room */
+#interviewBoard td{
+    color:#21105e;
+    border:1px solid #21105e;
+    text-align:center;
+    vertical-align:middle;
+    font-size:30px;
+    font-weight:900;
+    height:10px;
+    padding:0;
+    overflow:hidden;
+}
+
+/* ID VALUES */
+
+.id-value{
+    font:inherit;
+}
+
+/* NAME VALUES - TESTING ROOM */
+
+.name-value{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    width:100%;
+    height:100%;
+
+    font-size:20px;
+    font-weight:900;
+    line-height:1.05;
+
+    padding:4px;
+    box-sizing:border-box;
+
+    text-align:center;
+
+    white-space:normal;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+}
+
+/* NAME VALUES - INTERVIEW ROOM */
+
+#interviewBoard .name-value{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    width:100%;
+    height:100%;
+
+    font-size:20px;
+    font-weight:900;
+    line-height:1.05;
+
+    padding:4px;
+    box-sizing:border-box;
+
+    text-align:center;
+
+    white-space:normal;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+}
+
+#interviewBoard .id-value{
+    font:inherit;
+}
+
 /* POPUP */
+
 .popup{
     position:fixed;
     inset:0;
@@ -160,14 +284,46 @@ header{
     display:none;
 }
 
-.seat-call{
-    font-size:220px;
+.applicant-call{
+    font-size:90px;
     font-weight:900;
     line-height:1;
+    text-align:center;
+    color:#21105e;
+    margin:10px 0;
+}
+.seat-call{
+    font-size:120px;
+    font-weight:900;
+    line-height:1;
+    text-align:center;
+    display:block;
+    width:100%;
 }
 
 .instruction{
-    font-size:90px;
+    font-size:50px;
     font-weight:900;
     margin-top:20px;
+}
+.applicant-call-id{
+    font-size:150px;
+    font-weight:900;
+    line-height:1;
+    text-align:center;
+    color:#21105e;
+    margin:10px 0;
+}
+
+.applicant-call-name{
+    font-size:90px;
+    font-weight:900;
+    line-height:1;
+    text-align:center;
+    color:#21105e;
+    margin:10px 0;
+
+    white-space:normal;
+    word-break:break-word;
+    overflow-wrap:anywhere;
 }
