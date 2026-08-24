@@ -1,15 +1,56 @@
-const SITE = "ILO";
+const SITE = "sample";
 
 import { db } from "./firebase.js";
 import {
     ref,
     set,
     get,
-    push
+    push,
+    onValue
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
 const g = document.getElementById("grid");
 const interviewGrid = document.getElementById("interviewGrid");
+
+function watchCompletedCalls(path) {
+
+    const observedKeys = new Set();
+
+    onValue(
+        ref(db, path),
+        snapshot => {
+
+            const calls = snapshot.val() || {};
+            const previouslyObserved = new Set(observedKeys);
+
+            Object.keys(calls).forEach(key => {
+                observedKeys.add(key);
+            });
+
+            document
+                .querySelectorAll("button[data-call-key]")
+                .forEach(btn => {
+
+                    const key = btn.dataset.callKey;
+
+                    if (btn.dataset.callPath !== path) return;
+                    if (calls[key]) return;
+                    if (!previouslyObserved.has(key)) return;
+
+                    delete btn.dataset.callKey;
+                    btn.classList.add("fading");
+
+                    setTimeout(() => {
+                        btn.className = "";
+                        btn.innerHTML = btn.dataset.resetText;
+                    }, 1000);
+                });
+        }
+    );
+}
+
+watchCompletedCalls(`locations/${SITE}/queue`);
+watchCompletedCalls(`locations/${SITE}/interviewQueue`);
 
 async function loadSeats() {
 
@@ -129,11 +170,15 @@ window.callSeat = async function(seat){
         id = seatSnapshot.val();
     }
 if (id === 0 || id === "") return;
-    await push(
+    const callRef = push(
         ref(
             db,
             `locations/${SITE}/queue`
-        ),
+        )
+    );
+
+    await set(
+        callRef,
         {
             seat,
             id,
@@ -147,13 +192,9 @@ if (id === 0 || id === "") return;
 
     btn.className = "called";
     btn.innerHTML = "CALLED ✓";
-
-    setTimeout(() => {
-
-        btn.className = "";
-        btn.innerHTML = "CALL";
-
-    }, 10000);
+    btn.dataset.callKey = callRef.key;
+    btn.dataset.callPath = `locations/${SITE}/queue`;
+    btn.dataset.resetText = "CALL";
 };
 
 window.callInterview = async function(room){
@@ -165,11 +206,15 @@ window.callInterview = async function(room){
 
     if (!value || value === 0) return;
 
-    await push(
+    const callRef = push(
         ref(
             db,
             `locations/${SITE}/interviewQueue`
-        ),
+        )
+    );
+
+    await set(
+        callRef,
         {
             room,
             value,
@@ -183,13 +228,9 @@ window.callInterview = async function(room){
 
     btn.className = "called";
     btn.innerHTML = "CALLED ✓";
-
-    setTimeout(() => {
-
-        btn.className = "";
-        btn.innerHTML = "CALL INTERVIEW";
-
-    }, 10000);
+    btn.dataset.callKey = callRef.key;
+    btn.dataset.callPath = `locations/${SITE}/interviewQueue`;
+    btn.dataset.resetText = "CALL INTERVIEW";
 };
 
 window.clearAllSeats = async function(){

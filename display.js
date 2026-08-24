@@ -1,4 +1,4 @@
-const SITE = "ILO";
+const SITE = "sample";
 
 import { db } from "./firebase.js";
 import {
@@ -18,6 +18,10 @@ let queue = [];
 let interviewQueue = [];
 let processing = false;
 let chimePlayed = false;
+let currentTestingCall = null;
+let testingHistory = [];
+let currentInterviewCall = null;
+let interviewHistory = [];
 
 let interviewRooms = {
     1: "",
@@ -46,150 +50,94 @@ function loadFemaleVoice() {
 loadFemaleVoice();
 speechSynthesis.onvoiceschanged = loadFemaleVoice;
 
-/* TESTING ROOM TABLE */
+/* TESTING ROOM CALL BOARD */
 
-function draw(seats = []) {
+function callMarkup(call, emptyText) {
 
-    let html = `
-    <table>
-        <tr>
-            <th>SEAT</th><th>ID NO.</th>
-            <th>SEAT</th><th>ID NO.</th>
-            <th>SEAT</th><th>ID NO.</th>
-            <th>SEAT</th><th>ID NO.</th>
-        </tr>
-    `;
-
-    for (let r = 1; r <= 5; r++) {
-
-        html += "<tr>";
-
-        for (let c = 0; c < 4; c++) {
-
-            let seat = r + (c * 5);
-
-            let color =
-                (c % 2 === 0)
-                ? "pink"
-                : "green";
-
-html += `
-    <td class="${color}">
-        SEAT ${seat}
-    </td>
-
-    <td class="${color}">
-        <span class="${
-            seats[seat] &&
-            isNaN(seats[seat])
-                ? "name-value"
-                : "id-value"
-        }">
-            ${seats[seat] || 0}
-        </span>
-    </td>
-`;
-        }
-
-        html += "</tr>";
+    if (!call) {
+        return `<div class="call-empty">${emptyText}</div>`;
     }
 
-    html += "</table>";
-
-    board.innerHTML = html;
+    return `
+        <div class="call-location">${call.location}</div>
+        <div class="call-value">${call.value}</div>
+    `;
 }
 
-/* INTERVIEW ROOM TABLE */
+function boxMarkup(call) {
+
+    if (!call) {
+        return `<div class="box-empty">-</div>`;
+    }
+
+    return `
+        <div class="box-location">${call?.location || "-"}</div>
+        <div class="box-value ${isNaN(call.value) ? "box-name" : "box-id"}">
+            ${call.value}
+        </div>
+    `;
+}
+
+function drawCallBoard(boardElement, currentCall, history, emptyText, currentLabel, boxCount, listSize) {
+
+    const previousList = listSize > 0
+        ? `
+        <div class="previous-list-title">PREVIOUS CALLS</div>
+        <div class="previous-list">
+            ${Array.from({ length: listSize }, (_, index) => `
+                <div class="previous-list-row">
+                    <span class="previous-number">${index + 1}</span>
+                    <span>${history[index]?.value || "-"}</span>
+                </div>
+            `).join("")}
+        </div>
+        `
+        : "";
+
+    boardElement.innerHTML = `
+        <div class="current-call">
+            <div class="current-label">${currentLabel}</div>
+            ${callMarkup(currentCall, emptyText)}
+        </div>
+        <div class="call-history">
+            ${Array.from({ length: boxCount }, (_, index) => `
+                <div class="history-call">
+                    ${boxMarkup(history[index])}
+                </div>
+            `).join("")}
+        </div>
+        ${previousList}
+    `;
+}
+
+function draw() {
+
+    drawCallBoard(
+        board,
+        currentTestingCall,
+        testingHistory,
+        "WAITING FOR TESTING ROOM CALL",
+        "ASSESSMENT QUEUE",
+        4,
+        0
+    );
+}
 
 function drawInterviewRooms() {
 
-    let html = `
-    <table>
-        <tr>
-            <th>ROOM 1</th>
-            <th>ROOM 2</th>
-            <th>ROOM 3</th>
-            <th>ROOM 4</th>
-            <th>ROOM 5</th>
-        </tr>
-
-       <tr>
-
-    <td class="pink">
-        <span class="${
-            interviewRooms[1] &&
-            isNaN(interviewRooms[1])
-                ? "name-value"
-                : "id-value"
-        }">
-            ${interviewRooms[1] || "0"}
-        </span>
-    </td>
-
-    <td class="green">
-        <span class="${
-            interviewRooms[2] &&
-            isNaN(interviewRooms[2])
-                ? "name-value"
-                : "id-value"
-        }">
-            ${interviewRooms[2] || "0"}
-        </span>
-    </td>
-
-    <td class="pink">
-        <span class="${
-            interviewRooms[3] &&
-            isNaN(interviewRooms[3])
-                ? "name-value"
-                : "id-value"
-        }">
-            ${interviewRooms[3] || "0"}
-        </span>
-    </td>
-
-    <td class="green">
-        <span class="${
-            interviewRooms[4] &&
-            isNaN(interviewRooms[4])
-                ? "name-value"
-                : "id-value"
-        }">
-            ${interviewRooms[4] || "0"}
-        </span>
-    </td>
-
-    <td class="pink">
-        <span class="${
-            interviewRooms[5] &&
-            isNaN(interviewRooms[5])
-                ? "name-value"
-                : "id-value"
-        }">
-            ${interviewRooms[5] || "0"}
-        </span>
-    </td>
-
-</tr>
-    </table>
-    `;
-
-    interviewBoard.innerHTML = html;
+    drawCallBoard(
+        interviewBoard,
+        currentInterviewCall,
+        interviewHistory,
+        "WAITING FOR INTERVIEW ROOM CALL",
+        "INTERVIEW QUEUE",
+        4,
+        0
+    );
 }
 
+draw();
 drawInterviewRooms();
-
-/* SEATS */
-
-onValue(
-    ref(db, `locations/${SITE}/seats`),
-    snapshot => {
-
-        const seats = snapshot.val() || [];
-
-        draw(seats);
-    }
-);
 
 /* TESTING QUEUE */
 
@@ -207,8 +155,8 @@ onValue(
         ) {
             chimePlayed = false;
         }
-    }
-);
+        }
+    );
 
 /* INTERVIEW QUEUE */
 
@@ -226,8 +174,8 @@ onValue(
         ) {
             chimePlayed = false;
         }
-    }
-);
+        }
+    );
 /* INTERVIEW ROOMS REALTIME */
 
 onValue(
@@ -274,6 +222,28 @@ setInterval(async () => {
         [key, item] = interviewQueue[0];
 
         isInterview = true;
+    }
+
+    if (isInterview) {
+        if (currentInterviewCall) {
+            interviewHistory.unshift(currentInterviewCall);
+            interviewHistory = interviewHistory.slice(0, 5);
+        }
+        currentInterviewCall = {
+            location: `ROOM ${item.room}`,
+            value: item.value
+        };
+        drawInterviewRooms();
+    } else {
+        if (currentTestingCall) {
+            testingHistory.unshift(currentTestingCall);
+            testingHistory = testingHistory.slice(0, 8);
+        }
+        currentTestingCall = {
+            location: `SEAT ${item.seat}`,
+            value: item.id
+        };
+        draw();
     }
 
     popup.classList.remove("hidden");

@@ -10,19 +10,19 @@
 
     <div id="popup" class="popup hidden"></div>
 
-    <header>
-        <div class="title">TESTING ROOM</div>
-    </header>
+    <main class="display-shell">
+        <section class="room-panel">
+            <div class="room-title"><span class="room-icon testing-icon">&#9998;</span>TESTING ROOM</div>
+            <div id="board" class="call-board"></div>
+        </section>
 
-    <div id="board" class="board"></div>
+        <section class="room-panel">
+            <div class="room-title"><span class="room-icon interview-icon">&#9742;</span>INTERVIEW ROOM</div>
+            <div id="interviewBoard" class="call-board"></div>
+        </section>
+    </main>
 
-    <div class="section-title">
-        INTERVIEW ROOM
-    </div>
-
-    <div id="interviewBoard" class="board"></div>
-
-    <script type="module" src="display.js"></script>
+    <script type="module" src="display.js?v=responsive-name-size"></script>
 
 </body>
 </html>
