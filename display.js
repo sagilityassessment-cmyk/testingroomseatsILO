@@ -8,28 +8,16 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
 const board = document.getElementById("board");
-const interviewBoard = document.getElementById("interviewBoard");
 const popup = document.getElementById("popup");
 
 const chime = new Audio("./chime.mp3");
 
 let selectedVoice = null;
 let queue = [];
-let interviewQueue = [];
 let processing = false;
 let chimePlayed = false;
 let currentTestingCall = null;
 let testingHistory = [];
-let currentInterviewCall = null;
-let interviewHistory = [];
-
-let interviewRooms = {
-    1: "",
-    2: "",
-    3: "",
-    4: "",
-    5: ""
-};
 
 /* FEMALE VOICE */
 
@@ -51,6 +39,17 @@ loadFemaleVoice();
 speechSynthesis.onvoiceschanged = loadFemaleVoice;
 
 /* TESTING ROOM CALL BOARD */
+
+function showPopupCall({ location, value, instruction, isName = false }) {
+
+    popup.classList.remove("hidden");
+
+    popup.innerHTML = `
+        <div class="seat-call">${location}</div>
+        <div class="${isName ? "applicant-call-name" : "applicant-call-id"}">${value}</div>
+        <div class="instruction">${instruction}</div>
+    `;
+}
 
 function callMarkup(call, emptyText) {
 
@@ -118,26 +117,12 @@ function draw() {
         testingHistory,
         "WAITING FOR TESTING ROOM CALL",
         "ASSESSMENT QUEUE",
-        4,
-        0
-    );
-}
-
-function drawInterviewRooms() {
-
-    drawCallBoard(
-        interviewBoard,
-        currentInterviewCall,
-        interviewHistory,
-        "WAITING FOR INTERVIEW ROOM CALL",
-        "INTERVIEW QUEUE",
-        4,
+        12,
         0
     );
 }
 
 draw();
-drawInterviewRooms();
 
 /* TESTING QUEUE */
 
@@ -149,169 +134,105 @@ onValue(
 
         queue = Object.entries(data);
 
-        if (
-            queue.length === 0 &&
-            interviewQueue.length === 0
-        ) {
+        if (queue.length === 0) {
             chimePlayed = false;
         }
-        }
-    );
-
-/* INTERVIEW QUEUE */
+    }
+);
 
 onValue(
     ref(db, `locations/${SITE}/interviewQueue`),
     snapshot => {
 
         const data = snapshot.val() || {};
+        const entries = Object.entries(data);
 
-        interviewQueue = Object.entries(data);
+        if (entries.length === 0) return;
 
-        if (
-            queue.length === 0 &&
-            interviewQueue.length === 0
-        ) {
-            chimePlayed = false;
-        }
-        }
-    );
-/* INTERVIEW ROOMS REALTIME */
+        const [key, item] = entries[0];
+        const isName = isNaN(item.value);
 
-onValue(
-    ref(db, `locations/${SITE}/interviewRooms`),
-    snapshot => {
+        showPopupCall({
+            location: `Interviews Room ${item.room}`,
+            value: item.value,
+            instruction: "PLEASE PROCEED TO INTERVIEW ROOM",
+            isName
+        });
 
-        const data = snapshot.val() || {};
+        const announceText = isName
+            ? `Applicant ${item.value}. Interview room ${item.room}. Please proceed to interview room.`
+            : `Applicant ID ${item.value}. Interview room ${item.room}. Please proceed to interview room.`;
 
-        interviewRooms = {
-            1: data[1] || "",
-            2: data[2] || "",
-            3: data[3] || "",
-            4: data[4] || "",
-            5: data[5] || ""
+        const speak = () => {
+            speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(announceText);
+            utterance.voice = selectedVoice;
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            speechSynthesis.speak(utterance);
         };
 
-        drawInterviewRooms();
+        speak();
 
+        setTimeout(async () => {
+            popup.classList.add("hidden");
+            try {
+                await remove(
+                    ref(db, `locations/${SITE}/interviewQueue/${key}`)
+                );
+            } catch (err) {
+                console.log(err);
+            }
+        }, 10000);
     }
 );
+
 /* PROCESS QUEUE */
 
 setInterval(async () => {
 
     if (processing) return;
-
-    if (
-        queue.length === 0 &&
-        interviewQueue.length === 0
-    ) return;
+    if (queue.length === 0) return;
 
     processing = true;
 
-    let key;
-    let item;
-    let isInterview = false;
+    const [key, item] = queue[0];
 
-    if (queue.length > 0) {
-
-        [key, item] = queue[0];
-
-    } else {
-
-        [key, item] = interviewQueue[0];
-
-        isInterview = true;
+    if (currentTestingCall) {
+        testingHistory.unshift(currentTestingCall);
+        testingHistory = testingHistory.slice(0, 12);
     }
 
-    if (isInterview) {
-        if (currentInterviewCall) {
-            interviewHistory.unshift(currentInterviewCall);
-            interviewHistory = interviewHistory.slice(0, 5);
-        }
-        currentInterviewCall = {
-            location: `ROOM ${item.room}`,
-            value: item.value
-        };
-        drawInterviewRooms();
-    } else {
-        if (currentTestingCall) {
-            testingHistory.unshift(currentTestingCall);
-            testingHistory = testingHistory.slice(0, 8);
-        }
-        currentTestingCall = {
-            location: `SEAT ${item.seat}`,
-            value: item.id
-        };
-        draw();
-    }
+    currentTestingCall = {
+        location: `SEAT ${item.seat}`,
+        value: item.id
+    };
+    draw();
 
     popup.classList.remove("hidden");
 
-    let announceText = "";
+    popup.innerHTML = `
+        <div class="seat-call">
+            SEAT ${item.seat}
+        </div>
 
-if (isInterview) {
+        <div class="${
+            isNaN(item.id)
+                ? 'applicant-call-name'
+                : 'applicant-call-id'
+        }">
+            ${item.id}
+        </div>
 
-popup.innerHTML = `
-    <div class="seat-call">
-        ROOM ${item.room}
-    </div>
+        <div class="instruction">
+            PLEASE PROCEED TO TESTING ROOM
+        </div>
+    `;
 
-<div class="${
-    isNaN(item.value)
-        ? 'applicant-call-name'
-        : 'applicant-call-id'
-}">
-    ${item.value}
-</div>
-
-    <div class="instruction">
-        PLEASE PROCEED TO INTERVIEW ROOM
-    </div>
-`;
-
-    if (isNaN(item.value)) {
-
-        announceText =
-            `Applicant ${item.value}. Room ${item.room}. Please proceed for your Interview.`;
-
-    } else {
-
-        announceText =
-            `Applicant ID ${item.value}. Room ${item.room}. Please proceed for your Interview.`;
-    }
-
-} else {
-
-popup.innerHTML = `
-    <div class="seat-call">
-        SEAT ${item.seat}
-    </div>
-
-<div class="${
-    isNaN(item.id)
-        ? 'applicant-call-name'
-        : 'applicant-call-id'
-}">
-    ${item.id}
-</div>
-
-    <div class="instruction">
-        PLEASE PROCEED TO TESTING ROOM
-    </div>
-`;
-
-        if (isNaN(item.id)) {
-
-            announceText =
-                `Applicant ${item.id}. Seat number ${item.seat}. Please proceed to Testing Room.`;
-
-        } else {
-
-            announceText =
-                `Applicant ID ${item.id}. Seat number ${item.seat}. Please proceed to Testing Room.`;
-        }
-    }
+    const announceText = isNaN(item.id)
+        ? `Applicant ${item.id}. Seat number ${item.seat}. Please proceed to Testing Room.`
+        : `Applicant ID ${item.id}. Seat number ${item.seat}. Please proceed to Testing Room.`;
 
     const speak = () => {
 
@@ -366,9 +287,7 @@ popup.innerHTML = `
             await remove(
                 ref(
                     db,
-                    isInterview
-                        ? `locations/${SITE}/interviewQueue/${key}`
-                        : `locations/${SITE}/queue/${key}`
+                    `locations/${SITE}/queue/${key}`
                 )
             );
 
